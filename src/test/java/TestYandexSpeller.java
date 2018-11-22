@@ -9,6 +9,8 @@ import static core.YandexSpellerConstants.ErrorCode.ERROR_REPEAT_WORD;
 import static core.YandexSpellerConstants.ErrorCode.ERROR_UNKNOWN_WORD;
 import static core.YandexSpellerConstants.Language.UK;
 import static core.YandexSpellerConstants.Options.IGNORE_DIGITS;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
@@ -136,6 +138,15 @@ public class TestYandexSpeller {
         assertEquals(answers.get(0).get(0).s.get(0), "mother");
         assertEquals(answers.get(1).get(0).code, ERROR_UNKNOWN_WORD.code);
         assertEquals(answers.get(1).get(0).s.get(0), "мама");
+    }
+
+    @Test
+    public void answerSizeTest() {
+        List<List<YandexSpellerAnswer>> answers = YandexSpellerApi.getYandexSpellerAnswers(YandexSpellerApi.with()
+                .texts("мамаа", "папаа", "motherr", "fatherr")
+                .callApi());
+        assertThat(answers, hasSize(4));
+        assertThat(answers, not(hasItem(empty())));
     }
 
 }
